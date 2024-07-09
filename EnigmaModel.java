@@ -48,6 +48,7 @@ public class EnigmaModel{
         }
     }
 
+
     /*public static int applyPermutation(int index, EnigmaRotor rotor){
         int tempIndex = (index + rotor.getOffset()) % 26;
         int letterIndex = getIndexFromLetter(rotor.getPermutationLetter(tempIndex));
