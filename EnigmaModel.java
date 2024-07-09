@@ -35,7 +35,6 @@ public class EnigmaModel{
      *
      * @param view The view being added
      */
-
     public void addView(EnigmaView view) {
         views.add(view);
     }
@@ -43,14 +42,13 @@ public class EnigmaModel{
     /**
      * Sends an update request to all the views.
      */
-
     public void update() {
         for (EnigmaView view : views) {
             view.update();
         }
     }
 
-    public static int applyPermutation(int index, EnigmaRotor rotor){
+    /*public static int applyPermutation(int index, EnigmaRotor rotor){
         int tempIndex = (index + rotor.getOffset()) % 26;
         int letterIndex = getIndexFromLetter(rotor.getPermutationLetter(tempIndex));
         int temp = letterIndex - rotor.getOffset();
@@ -65,15 +63,28 @@ public class EnigmaModel{
         if(temp < 0) return (temp + 26);
         return temp % 26;
     }
+    */
+    public static int applyPermutations(int index, EnigmaRotor rotor, boolean inverted){
+        int tempIndex = (index + rotor.getOffset()) % 26;
+        int letterIndex;
+        if(inverted){
+            letterIndex = getIndexFromLetter(rotor.getInvertedPermutationLetter(tempIndex));
+        } else {
+            letterIndex = getIndexFromLetter(rotor.getPermutationLetter(tempIndex));
+        }
+        int temp = letterIndex - rotor.getOffset();
+        if(temp < 0) return (temp + 26);
+        return temp % 26;
+    }
 
     public static int encrypt(int index){
         int encryptedIndex = index;
         for(int i = 2; i >= 0; i--){
-            encryptedIndex = applyPermutation(encryptedIndex, rotors[i]);
+            encryptedIndex = applyPermutations(encryptedIndex, rotors[i], false);
         }
-        encryptedIndex = applyPermutation(encryptedIndex, reflector);
+        encryptedIndex = applyPermutations(encryptedIndex, reflector, false);
         for(int i = 0; i < 3; i++){
-            encryptedIndex = applyPermutationInverse(encryptedIndex, rotors[i]);
+            encryptedIndex = applyPermutations(encryptedIndex, rotors[i], true);
         }
         return encryptedIndex;
     }
@@ -84,7 +95,6 @@ public class EnigmaModel{
      *
      * @param letter The letter key being tested as a one-character string.
      */
-
     public boolean isKeyDown(String letter) {
         return enigmaKey.keys[enigmaKey.keyInds.get(letter) - 1];
     }
@@ -94,7 +104,6 @@ public class EnigmaModel{
      *
      * @param letter The lamp being tested as a one-character string.
      */
-
     public boolean isLampOn(String letter) {
         return enigmaLamp.lamps[enigmaLamp.lampInds.get(letter) - 1];
     }
@@ -105,7 +114,6 @@ public class EnigmaModel{
      * @param index The index of the rotor (0-2)
      * @return The letter visible in the indicated rotor
      */
-
     public static String getLetterAtIndex(int index) {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return alphabet.substring(index, index + 1);
@@ -121,7 +129,6 @@ public class EnigmaModel{
      *
      * @param key The key the user pressed as a one-character string
      */
-
     public void keyPressed(String key) {
         // Write the code to handle a key press
         if(rotors[2].advance()){
@@ -138,7 +145,6 @@ public class EnigmaModel{
      *
      * @param key The key the user released as a one-character string
      */
-
     public void keyReleased(String key) {
         // Write the code to handle a key release
         int index = encrypt(getIndexFromLetter(key));
@@ -157,34 +163,24 @@ public class EnigmaModel{
      *
      * @param index The index of the rotor that was clicked
      */
-
     public void rotorClicked(int index) {
         // Write the code to run when the specified rotor is clicked
         rotors[index].setOffset(rotors[index].getOffset() + 1);
     }
 
     /* Main program */
-
     public static void main(String[] args) {
-        System.out.println(System.getProperty("user.dir"));
-        System.out.println(System.getProperty("user.dir"));
         EnigmaModel model = new EnigmaModel();
         EnigmaView view = new EnigmaView(model);
         model.addView(view);
 
-        String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String inverted = "";
-        for(int i = 0; i < alphabet.length(); i++){
-            inverted += getLetterAtIndex(model.rotors[0].getPermutationLetterIndex(alphabet.substring(i, i + 1)));
+        for(int i = 0; i < EnigmaConstants.ALPHABET.length(); i++){
+            inverted += getLetterAtIndex(model.rotors[0].getPermutationLetterIndex(EnigmaConstants.ALPHABET.substring(i, i + 1)));
         }
-        //System.out.println(inverted);
-
-        //System.out.println(model.rotors[0].getInvertedPermutationLetter(0));
-
     }
 
     /* Private instance variables */
-
     private ArrayList<EnigmaView> views;
 
 }
