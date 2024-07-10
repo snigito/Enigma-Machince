@@ -10,16 +10,11 @@
 import java.util.ArrayList;
 
 public class EnigmaModel{
-    EnigmaKey enigmaKey;
-    EnigmaLamp enigmaLamp;
-
     static EnigmaRotor[] rotors;
     static EnigmaRotor reflector;
 
     public EnigmaModel() {
         views = new ArrayList<EnigmaView>();
-        enigmaKey = new EnigmaKey();
-        enigmaLamp = new EnigmaLamp();
         rotors = new EnigmaRotor[3];
         EnigmaRotor fastRotor = new EnigmaRotor("BDFHJLCPRTXVZNYEIWGAKMUSQO");
         EnigmaRotor mediumRotor = new EnigmaRotor("AJDKSIRUXBLHWTMCQGZNPYFVOE");
@@ -48,23 +43,6 @@ public class EnigmaModel{
         }
     }
 
-
-    /*public static int applyPermutation(int index, EnigmaRotor rotor){
-        int tempIndex = (index + rotor.getOffset()) % 26;
-        int letterIndex = getIndexFromLetter(rotor.getPermutationLetter(tempIndex));
-        int temp = letterIndex - rotor.getOffset();
-        if(temp < 0) return (temp + 26);
-        return temp % 26;
-    }
-
-    public static int applyPermutationInverse(int index, EnigmaRotor rotor){
-        int tempIndex = (index + rotor.getOffset()) % 26;
-        int letterIndex = getIndexFromLetter(rotor.getInvertedPermutationLetter(tempIndex));
-        int temp = letterIndex - rotor.getOffset();
-        if(temp < 0) return (temp + 26);
-        return temp % 26;
-    }
-    */
     public static int applyPermutations(int index, EnigmaRotor rotor, boolean inverted){
         int tempIndex = (index + rotor.getOffset()) % 26;
         int letterIndex;
@@ -97,7 +75,7 @@ public class EnigmaModel{
      * @param letter The letter key being tested as a one-character string.
      */
     public boolean isKeyDown(String letter) {
-        return enigmaKey.keys[enigmaKey.keyInds.get(letter) - 1];
+        return EnigmaKey.keys[EnigmaKey.keyInds.get(letter) - 1];
     }
 
     /**
@@ -106,7 +84,7 @@ public class EnigmaModel{
      * @param letter The lamp being tested as a one-character string.
      */
     public boolean isLampOn(String letter) {
-        return enigmaLamp.lamps[enigmaLamp.lampInds.get(letter) - 1];
+        return EnigmaLamp.lamps[EnigmaLamp.lampInds.get(letter) - 1];
     }
 
     /**
@@ -136,8 +114,8 @@ public class EnigmaModel{
             if(rotors[1].advance()) rotors[0].advance();
         }
         int index = encrypt(getIndexFromLetter(key));
-        enigmaLamp.lamps[index] = true;
-        enigmaKey.keys[getIndexFromLetter(key)] = true;
+        EnigmaLamp.lamps[index] = true;
+        EnigmaKey.keys[getIndexFromLetter(key)] = true;
         this.update();
     }
 
@@ -149,8 +127,8 @@ public class EnigmaModel{
     public void keyReleased(String key) {
         // Write the code to handle a key release
         int index = encrypt(getIndexFromLetter(key));
-        enigmaLamp.lamps[index] = false;
-        enigmaKey.keys[getIndexFromLetter(key)] = false;
+        EnigmaLamp.lamps[index] = false;
+        EnigmaKey.keys[getIndexFromLetter(key)] = false;
         this.update();
     }
 
